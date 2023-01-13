@@ -4,7 +4,8 @@ import {
 	Text,
 	StatusBar,
 	ScrollView,
-	TouchableOpacity
+	TouchableOpacity,
+	Image
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,8 +17,6 @@ const Home = ({ navigation }) => {
 	const [accessory, setAccessory] = useState([]);
 
 	useEffect(() => {
-
-		// const t = navigation.add
 		const unsubscribe = navigation.addListener('focus', () => {
 			getDataFromDB();
 		});
@@ -25,22 +24,177 @@ const Home = ({ navigation }) => {
 		return unsubscribe;
 	}, [navigation])
 
+
 	//get data from db
 	const getDataFromDB = () => {
-		let productList = [];
-		let accessoryList = [];
-
-		for (let i = 0; i < Items.length; i++) {
-			if (Items[i].category == 'product') {
-				productList.push(Items[i]);
-			} else if (Items[i].category == 'accessory') {
-				accessoryList.push(Items[i]);
-			}
-		}
-
+		
+		const productList = Items.filter(f => f.category === 'product');
 		setProducts(productList);
-		setAccessory(accessoryList);
+
+		setAccessory(Items.filter(f => f.category === 'accessory'));
+
+		//------------------
+		// let productList = [];
+		// let accessoryList = [];
+
+		// for (let i = 0; i < Items.length; i++) {
+		// 	if (Items[i].category === 'product') {
+		// 		productList.push(Items[i]);
+		// 	} else if (Items[i].category === 'accessory') {
+		// 		accessoryList.push(Items[i]);
+		// 	}
+		// }
+
+		// setProducts(productList);
+		// setAccessory(accessoryList);
+		
+		//-----------------
+		// let pd = [];
+		// let acc = [];
+
+		// for (const item of Items) {
+		// 	if (item.category === 'product') {
+		// 		pd.push(item)
+		// 	} else if (item.category === 'accessory') {
+		// 		acc.push(item)
+		// 	};
+		// };
+
+		// setProducts(pd);
+		// setAccessory(acc);
 	};
+
+	//create an product reuseable card
+	const ProductCard = ({ data }) => {
+		return (
+			<TouchableOpacity
+				onPress={() => navigation.navigate('ProductInfo', { productID: data.id })}
+				style={{
+					width: '48%',
+					marginVertical: 14,
+				}}
+			>
+				<View
+					style={{
+						width: '100%',
+						height: 100,
+						backgroundColor: COLOURS.backgroundLight,
+						borderRadius: 10,
+						position: 'relative',
+						justifyContent: 'center',
+						alignItems: 'center',
+						marginBottom: 8,
+					}}
+				>
+					{/* {data.isOff &&
+						<View>
+							<Text>
+								{data.offPercentage}
+							</Text>
+						</View>
+					} */}
+
+					{data.isOff ? (
+						<View
+							style={{
+								position: 'absolute',
+								width: '20%',
+								height: '24%',
+								backgroundColor: COLOURS.green,
+								top: 0,
+								left: 0,
+								borderTopLeftRadius: 10,
+								borderBottomRightRadius: 10,
+								justifyContent: 'center',
+								alignItems: 'center',
+							}}>
+							<Text
+								style={{
+									fontSize: 12,
+									fontWeight: 'bold',
+									color: COLOURS.white,
+									letterSpacing: 1,
+								}}
+							>{data.offPercentage}%</Text>
+						</View>
+					) : null}
+					<Image
+						source={data.productImage}
+						style={{
+							width: '80%',
+							height: '80%',
+							resizeMode: 'contain'
+						}}
+					/>
+				</View>
+				<Text
+					style={{
+						fontSize: 12,
+						fontWeight: '600',
+						color: COLOURS.black,
+						marginBottom: 2
+					}}
+				>
+					{data.productName}
+				</Text>
+				{data.category === 'accessory' ? (
+					data.isAvailable ? (
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'center',
+							}}
+						>
+							<FontAwesome
+								name='circle'
+								style={{
+									fontSize: 12,
+									color: COLOURS.green,
+									marginRight: 6,
+								}}
+							/>
+							<Text
+								style={{
+									fontSize: 12,
+									color: COLOURS.green
+								}}
+							>
+								Available
+							</Text>
+						</View>
+					) : (
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'center',
+							}}
+						>
+							<FontAwesome
+								name='circle'
+								style={{
+									fontSize: 12,
+									color: COLOURS.red,
+									marginRight: 6,
+								}}
+							/>
+							<Text
+								style={{
+									fontSize: 12,
+									color: COLOURS.red
+								}}
+							>
+								unavailable
+							</Text>
+						</View>
+					)
+				) : null}
+				<Text>
+					฿ {data.productPrice}
+				</Text>
+			</TouchableOpacity>
+		);
+	};
+
 
 	return (
 		<View
@@ -51,9 +205,7 @@ const Home = ({ navigation }) => {
 			}}
 		>
 			<StatusBar backgroundColor={COLOURS.white} barStyle='dark-content' />
-			<ScrollView
-			// showsVerticalScrollIndicator={false}
-			>
+			<ScrollView showsVerticalScrollIndicator={false} >
 				<View
 					style={{
 						width: '100%',
@@ -167,10 +319,82 @@ const Home = ({ navigation }) => {
 						</Text>
 					</View>
 
-					<View>
-						{products.map(data => {
-							return <Text>{data.productName}</Text>
-						})}
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							flexWrap: 'wrap'
+						}}
+					>
+						{products.map(data =>
+							<ProductCard
+								data={data}
+								key={data.id}
+							/>
+						)}
+					</View>
+				</View>
+
+				<View style={{ padding: 16 }}>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+						}}
+					>
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'center'
+							}}
+						>
+							<Text
+								style={{
+									fontSize: 18,
+									fontWeight: '500',
+									color: COLOURS.black,
+									letterSpacing: 1,
+								}}
+							>
+								Accessories
+							</Text>
+							<Text
+								style={{
+									fontSize: 14,
+									fontWeight: '400',
+									color: COLOURS.black,
+									opacity: 0.5,
+									marginLeft: 10,
+								}}
+							>
+								78
+							</Text>
+						</View>
+						<Text
+							style={{
+								fontSize: 14,
+								fontWeight: '400',
+								color: COLOURS.blue,
+							}}
+						>
+							See all
+						</Text>
+					</View>
+
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							flexWrap: 'wrap'
+						}}
+					>
+						{accessory.map(data =>
+							<ProductCard
+								data={data}
+								key={data.id}
+							/>
+						)}
 					</View>
 				</View>
 

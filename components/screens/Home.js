@@ -27,7 +27,7 @@ const Home = ({ navigation }) => {
 
 	//get data from db
 	const getDataFromDB = () => {
-		
+
 		const productList = Items.filter(f => f.category === 'product');
 		setProducts(productList);
 
@@ -47,7 +47,7 @@ const Home = ({ navigation }) => {
 
 		// setProducts(productList);
 		// setAccessory(accessoryList);
-		
+
 		//-----------------
 		// let pd = [];
 		// let acc = [];
@@ -68,7 +68,7 @@ const Home = ({ navigation }) => {
 	const ProductCard = ({ data }) => {
 		return (
 			<TouchableOpacity
-				onPress={() => navigation.navigate('ProductInfo', { productID: data.id })}
+				onPress={() => navigation.navigate('ProductInfo', { productID: data.id, data })}
 				style={{
 					width: '48%',
 					marginVertical: 14,

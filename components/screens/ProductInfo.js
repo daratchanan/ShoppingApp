@@ -8,11 +8,13 @@ import {
 	Image,
 	Dimensions,
 	Animated,
-	Text
+	Text,
+	ToastAndroid
 } from 'react-native';
 import { COLOURS, Items } from '../database/Database';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductInfo = ({ route, navigation }) => {
 	const { productID, data } = route.params;
@@ -24,6 +26,14 @@ const ProductInfo = ({ route, navigation }) => {
 	const scrollX = new Animated.Value(0);
 
 	let position = Animated.divide(scrollX, width);
+
+	useEffect(() => {
+		const unsubscribe = navigation.addListener('focus', () => {
+			getDataFromDB();
+		});
+
+		return unsubscribe;
+	}, [navigation]);
 
 	//get product data by productID
 	// const getDataFromDB = async () => {
@@ -40,14 +50,40 @@ const ProductInfo = ({ route, navigation }) => {
 		setProduct(productDetail);
 	};
 
-	useEffect(() => {
-		const unsubscribe = navigation.addListener('focus', () => {
-			getDataFromDB();
-		});
 
-		return unsubscribe;
-	}, [navigation]);
+	// add to cart
+	const addToCart = async (id) => {
+		let itemArray = await AsyncStorage.getItem('cartItems');
+		itemArray = JSON.parse(itemArray);
+		if (itemArray) {
+			let array = [...itemArray];
+			array.push(id);
 
+			try {
+				await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+				ToastAndroid.show(
+					'Item Added Successfully to cart',
+					ToastAndroid.SHORT,
+				);
+				navigation.navigate('Home');
+			} catch (error) {
+				return error;
+			}
+		} else {
+			let array = [];
+			array.push(id);
+			try {
+				await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+				ToastAndroid.show(
+					'Item Added Successfully to cart',
+					ToastAndroid.SHORT,
+				);
+				navigation.navigate('Home');
+			} catch (error) {
+				return error;
+			}
+		}
+	};
 
 	//product horizental scroll product card
 	const renderProduct = ({ item, index }) => {
@@ -298,8 +334,61 @@ const ProductInfo = ({ route, navigation }) => {
 							}}
 						/>
 					</View>
+					<View style={{ paddingHorizontal: 16 }}>
+						<Text
+							style={{
+								fontSize: 18,
+								fontWeight: '500',
+								maxWidth: '85%',
+								color: COLOURS.black,
+								marginBottom: 4
+							}}
+						>
+							฿ {product.productPrice}.00
+						</Text>
+						<Text>
+							Tax Rate 2%~฿{product.productPrice / 20} (฿
+							{product.productPrice + product.productPrice / 20})
+						</Text>
+					</View>
 				</View>
 			</ScrollView>
+
+			<View
+				style={{
+					position: 'absolute',
+					bottom: 10,
+					width: '100%',
+					height: '8%',
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}
+			>
+				<TouchableOpacity
+					onPress={() => product.isAvailable ? addToCart(product.id) : null}
+					style={{
+						width: '86%',
+						height: '90%',
+						backgroundColor: COLOURS.blue,
+						borderRadius: 20,
+						justifyContent: 'center',
+						alignItems: 'center'
+					}}
+				>
+					<Text
+						style={{
+							fontSize: 12,
+							fontWeight: '500',
+							color: COLOURS.white,
+							letterSpacing: 1,
+							textTransform: 'uppercase'
+						}}
+					>
+						{product.isAvailable ? 'Add to cart' : 'Not Available'}
+					</Text>
+				</TouchableOpacity>
+
+			</View>
 		</View>
 	);
 };

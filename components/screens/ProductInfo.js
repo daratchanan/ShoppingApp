@@ -52,7 +52,7 @@ const ProductInfo = ({ route, navigation }) => {
 
 
 	// add to cart
-	const addToCart = async (id) => {
+	const addToCart = async id => {
 		let itemArray = await AsyncStorage.getItem('cartItems');
 		itemArray = JSON.parse(itemArray);
 		if (itemArray) {
@@ -72,6 +72,7 @@ const ProductInfo = ({ route, navigation }) => {
 		} else {
 			let array = [];
 			array.push(id);
+
 			try {
 				await AsyncStorage.setItem('cartItems', JSON.stringify(array));
 				ToastAndroid.show(

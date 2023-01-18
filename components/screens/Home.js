@@ -226,7 +226,7 @@ const Home = ({ navigation }) => {
 							}}
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity>
+					<TouchableOpacity onPress={() => navigation.navigate('MyCart')} >
 						<Ionicons
 							name='cart'
 							style={{

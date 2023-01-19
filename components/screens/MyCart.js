@@ -56,8 +56,31 @@ const MyCart = ({ navigation }) => {
 	};
 
 	//remove data from Cart
-	const removeItemFromCart = () => {
-		
+	// const removeItemFromCart = async (id) => {
+	// 	let itemArray = await AsyncStorage.getItem('cartItems');
+	// 	itemArray = JSON.parse(itemArray);
+	// 	if (itemArray) {
+	// 		let array = itemArray;
+	// 		for (let i = 0; i < array.length; i++) {
+	// 			if (array[i] === id) {
+	// 				array.splice(i, 1);
+	// 			}
+
+	// 			await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+	// 			getDataFromDB();
+	// 		}
+	// 	}
+	// };
+
+	const removeItemFromCart = async (id) => {
+		let itemArray = await AsyncStorage.getItem('cartItems');
+		itemArray = JSON.parse(itemArray);
+
+		const tempCarts = [...itemArray];
+		const newCarts = tempCarts.filter(f => f !== id)
+
+		await AsyncStorage.setItem('cartItems', JSON.stringify(newCarts));
+		getDataFromDB();
 	};
 
 	const renderProducts = (data, index) => {
@@ -263,9 +286,302 @@ const MyCart = ({ navigation }) => {
 				<View style={{ paddingHorizontal: 16 }}>
 					{product ? product.map(renderProducts) : null}
 				</View>
+				<View
+					style={{
+						paddingHorizontal: 16,
+						marginVertical: 10,
+					}}
+				>
+					<Text
+						style={{
+							fontSize: 16,
+							fontWeight: '500',
+							letterSpacing: 1,
+							color: COLOURS.black,
+							marginBottom: 20
+						}}
+					>
+						Delivery Location
+					</Text>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center'
+						}}
+					>
+						<View
+							style={{
+								flexDirection: 'row',
+								width: '80%',
+								alignItems: 'center'
+							}}
+						>
+							<MaterialCommunityIcons
+								name='truck-delivery-outline'
+								style={{
+									fontSize: 18,
+									color: COLOURS.blue,
+									backgroundColor: COLOURS.backgroundLight,
+									padding: 12,
+									borderRadius: 10,
+									marginRight: 18
+								}}
+							/>
+							<View>
+								<Text
+									style={{
+										fontSize: 14,
+										fontWeight: '500',
+										color: COLOURS.black
+									}}
+								>
+									2 Petre Melikishvili St.
+								</Text>
+								<Text
+									style={{
+										fontSize: 12,
+										fontWeight: '500',
+										color: COLOURS.black,
+										lineHeight: 20,
+										opacity: 0.5
+									}}
+								>
+									0162, Tbilisi
+								</Text>
+							</View>
+						</View>
+
+						<MaterialCommunityIcons
+							name='chevron-right'
+							style={{ fontSize: 22, color: COLOURS.black }}
+						/>
+					</View>
+				</View>
+
+				<View
+					style={{
+						paddingHorizontal: 16,
+						marginVertical: 10,
+					}}
+				>
+					<Text
+						style={{
+							fontSize: 16,
+							fontWeight: '500',
+							letterSpacing: 1,
+							color: COLOURS.black,
+							marginBottom: 20
+						}}
+					>
+						Delivery Location
+					</Text>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center'
+						}}
+					>
+						<View
+							style={{
+								flexDirection: 'row',
+								width: '80%',
+								alignItems: 'center'
+							}}
+						>
+							<Text
+								style={{
+									fontSize: 10,
+									fontWeight: '900',
+									letterSpacing: 1,
+									color: COLOURS.blue,
+									backgroundColor: COLOURS.backgroundLight,
+									padding: 12,
+									borderRadius: 10,
+									marginRight: 18
+								}}
+							>
+								Visa
+							</Text>
+							<View>
+								<Text
+									style={{
+										fontSize: 14,
+										fontWeight: '500',
+										color: COLOURS.black
+									}}
+								>
+									VISA Classic
+								</Text>
+								<Text
+									style={{
+										fontSize: 12,
+										fontWeight: '400',
+										color: COLOURS.black,
+										lineHeight: 20,
+										opacity: 0.5
+									}}
+								>
+									****-9092
+								</Text>
+							</View>
+						</View>
+
+						<MaterialCommunityIcons
+							name='chevron-right'
+							style={{ fontSize: 22, color: COLOURS.black }}
+						/>
+					</View>
+				</View>
+
+				<View
+					style={{
+						paddingHorizontal: 16,
+						marginTop: 40,
+						marginBottom: 80,
+					}}
+				>
+					<Text
+						style={{
+							fontSize: 16,
+							fontWeight: '500',
+							color: COLOURS.black,
+							letterSpacing: 1,
+							marginBottom: 20,
+						}}
+					>
+						Order Info
+					</Text>
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+							marginBottom: 8
+						}}
+					>
+						<Text
+							style={{
+								fontSize: 12,
+								fontWeight: '400',
+								maxWidth: '80%',
+								color: COLOURS.black,
+								opacity: 0.5
+							}}
+						>
+							Subtotal
+						</Text>
+						<Text
+							style={{
+								fontSize: 12,
+								fontWeight: '400',
+								color: COLOURS.black,
+								opacity: 0.5
+							}}
+						>
+							฿ {total}.00
+						</Text>
+					</View>
+
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+							marginBottom: 22
+						}}
+					>
+						<Text
+							style={{
+								fontSize: 12,
+								fontWeight: '400',
+								maxWidth: '80%',
+								color: COLOURS.black,
+								opacity: 0.5
+							}}
+						>
+							Shopping Tax
+						</Text>
+						<Text
+							style={{
+								fontSize: 12,
+								fontWeight: '400',
+								color: COLOURS.black,
+								opacity: 0.5
+							}}
+						>
+							฿ {total / 20}
+						</Text>
+					</View>
+
+					<View
+						style={{
+							flexDirection: 'row',
+							justifyContent: 'space-between',
+							alignItems: 'center',
+						}}
+					>
+						<Text
+							style={{
+								fontSize: 12,
+								fontWeight: '400',
+								maxWidth: '80%',
+								color: COLOURS.black,
+								opacity: 0.5
+							}}
+						>
+							Total
+						</Text>
+						<Text
+							style={{
+								fontSize: 18,
+								fontWeight: '500',
+								color: COLOURS.black,
+							}}
+						>
+							฿ {total + total / 20}
+						</Text>
+					</View>
+				</View>
 			</ScrollView>
+
+			<View
+				style={{
+					position: 'absolute',
+					bottom: 10,
+					width: '100%',
+					height: '8%',
+					justifyContent: 'center',
+					alignItems: 'center',
+				}}
+			>
+				<TouchableOpacity
+					// onPress={() => (total !== 0 ? checkout() : null)};
+					style={{
+						backgroundColor: COLOURS.blue,
+						width: '86%',
+						height: '90%',
+						borderRadius: 20,
+						justifyContent: 'center',
+						alignItems: 'center'
+					}}
+				>
+					<Text
+						style={{
+							fontSize: 12,
+							fontWeight: '500',
+							color: COLOURS.white,
+							letterSpacing: 1,
+							textTransform: 'uppercase'
+						}}
+					>
+						checkout (฿ {total + total / 20})
+					</Text>
+				</TouchableOpacity>
+			</View>
 		</View>
 	);
 };
 
-export default MyCart
+export default MyCart;

@@ -86,14 +86,6 @@ const Home = ({ navigation }) => {
 						marginBottom: 8,
 					}}
 				>
-					{/* {data.isOff &&
-						<View>
-							<Text>
-								{data.offPercentage}
-							</Text>
-						</View>
-					} */}
-
 					{data.isOff ? (
 						<View
 							style={{

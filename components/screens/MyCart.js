@@ -4,7 +4,8 @@ import {
 	Text,
 	ScrollView,
 	TouchableOpacity,
-	Image
+	Image,
+	ToastAndroid
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLOURS, Items } from '../database/Database';
@@ -82,6 +83,19 @@ const MyCart = ({ navigation }) => {
 		await AsyncStorage.setItem('cartItems', JSON.stringify(newCarts));
 		getDataFromDB();
 	};
+
+	//checkout 
+	const checkOut = async () => {
+		try {
+			await AsyncStorage.removeItem('cartItems');
+		} catch (error) {
+			return error;
+		}
+
+		ToastAndroid.show('Items will be Deliverd SOON!!', ToastAndroid.SHORT);
+		navigation.navigate('Home');
+	};
+
 
 	const renderProducts = (data, index) => {
 		return (
@@ -557,7 +571,7 @@ const MyCart = ({ navigation }) => {
 				}}
 			>
 				<TouchableOpacity
-					// onPress={() => (total !== 0 ? checkout() : null)};
+					onPress={() => (total !== 0 ? checkOut() : null)}
 					style={{
 						backgroundColor: COLOURS.blue,
 						width: '86%',
